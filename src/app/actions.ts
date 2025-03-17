@@ -1,6 +1,6 @@
 'use server';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = async () => 'force-dynamic';
 
 import { GENERIC_ERROR_MESSAGE } from '@/common/constants/generic-error-message';
 import type { LoginRequestDto } from '@/common/validations/auth/login/login-request.dto';
