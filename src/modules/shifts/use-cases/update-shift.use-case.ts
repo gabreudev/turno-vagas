@@ -43,8 +43,6 @@ export class UpdateShiftUseCase {
     ) {
       const { weekDay, startAt, endAt } = shift;
 
-      await this.dbService.shift.delete({ where: { id } });
-
       this.shiftsService.sendRejectedShiftNotification(
         user.email,
         user.name,
@@ -79,7 +77,6 @@ export class UpdateShiftUseCase {
         minutesToTimeString(shift.startAt),
         minutesToTimeString(shift.endAt),
       );
-      await this.dbService.shift.delete({ where: { id } });
     }
     return updatedShift;
   }
