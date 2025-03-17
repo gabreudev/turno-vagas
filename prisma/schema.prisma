@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  TRABALHADOR
+  ADMINISTRADOR
+}
+
+model User {
+  id              Int     @id @default(autoincrement())
+  email           String  @unique
+  password        String
+  name            String
+  role            Role    @default(TRABALHADOR)
+  isEmailVerified Boolean @default(false) @map("is_email_verified")
+  isBanned        Boolean @default(true) @map("is_banned")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  shifts  Shift[]
+  history History[]
+
+  @@map("users")
+}
+
+enum WeekDay {
+  DOMINGO
+  SEGUNDA
+  TERCA
+  QUARTA
+  QUINTA
+  SEXTA
+  SABADO
+}
+
+enum ShiftStatus {
+  PENDENTE
+  APROVADO
+  REJEITADO
+}
+
+model Shift {
+  id      Int         @id @default(autoincrement())
+  weekDay WeekDay
+  startAt Int         @map("start_at")
+  endAt   Int         @map("end_at")
+  status  ShiftStatus @default(PENDENTE)
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("shifts")
+}
+
+model History {
+  id        Int     @id @default(autoincrement())
+  weekDay   WeekDay
+  startAt   Int     @map("start_at")
+  endAt     Int     @map("end_at")
+  isPresent Boolean @default(true) @map("is_present")
+
+  relatedDate DateTime @map("related_date")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("history")
+}
+
+model DeletedDays {
+  id          Int      @id @default(autoincrement())
+  relatedDate DateTime @unique @map("related_date")
+  reason      String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("deleted_days")
+}
