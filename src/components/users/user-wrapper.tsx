@@ -13,8 +13,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/auth-context';
-import { Calendar1, CircleUser } from 'lucide-react';
+import { Calendar1, CircleUser, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type React from 'react';
 
 interface UserWrapperProps {
@@ -37,10 +38,16 @@ function NotUser(): JSX.Element {
 }
 
 export function UserWrapper({ children }: UserWrapperProps): JSX.Element {
-  const { user } = useAuth();
+  const { refresh } = useRouter();
+  const { user, logout } = useAuth();
 
   if (user?.role !== roleSchema.enum.TRABALHADOR) {
     return <NotUser />;
+  }
+
+  function onLogoutClick(): void {
+    logout();
+    refresh();
   }
 
   return (
@@ -51,7 +58,10 @@ export function UserWrapper({ children }: UserWrapperProps): JSX.Element {
           <span className="text-lg">Turno Vagas</span>
         </Link>
 
-        <DropdownMenu open={false}>
+        <Button variant="outline" onClick={onLogoutClick}>
+          <LogOut />
+        </Button>
+        {/* <DropdownMenu open={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <CircleUser className="h-5 w-5" />
@@ -66,7 +76,7 @@ export function UserWrapper({ children }: UserWrapperProps): JSX.Element {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </header>
 
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">

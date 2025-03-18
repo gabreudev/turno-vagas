@@ -27,8 +27,8 @@ export default function UsersTable(): JSX.Element {
   } = useQuery({
     queryKey: [USERS_CACHE_KEY],
     queryFn: () => getUsers(),
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    // refetchOnMount: false,
+    // refetchOnReconnect: false,
   });
 
   if (isLoadingUsers) {

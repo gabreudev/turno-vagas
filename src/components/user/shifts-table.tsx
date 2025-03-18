@@ -98,8 +98,8 @@ export function ShiftsTable({ userId }: ShiftsTableProps): JSX.Element {
   } = useQuery({
     queryKey: [USER_SHIFTS_CACHE_KEY],
     queryFn: () => getShiftsByUser(userId),
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    // refetchOnMount: false,
+    // refetchOnReconnect: false,
   });
 
   const { user } = useAuth();

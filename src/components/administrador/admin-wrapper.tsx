@@ -16,8 +16,9 @@ import {
   Users,
   CalendarDays,
   History,
+  LogOut,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { Sheet, SheetTrigger, SheetContent } from '../ui/sheet';
 import Link from 'next/link';
@@ -35,7 +36,6 @@ const navItems = [
   { name: 'Usuários', icon: Users, href: USERS },
   { name: 'Agendamentos', icon: CalendarDays, href: SCHEDULES },
   { name: 'Históricos', icon: History, href: HISTORYS },
-
 ];
 
 function NotAdmin(): JSX.Element {
@@ -54,12 +54,18 @@ function NotAdmin(): JSX.Element {
 // TODO: Refactor to this to split into reusable components
 export function AdminWrapper({ children }: AdminWrapperProps): JSX.Element {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { refresh } = useRouter();
+  const { user, logout } = useAuth();
 
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
 
   if (user?.role !== roleSchema.enum.ADMINISTRADOR) {
     return <NotAdmin />;
+  }
+
+  function onLogoutClick(): void {
+    logout();
+    refresh();
   }
 
   return (
@@ -158,7 +164,10 @@ export function AdminWrapper({ children }: AdminWrapperProps): JSX.Element {
 
           <div className="w-full flex-1"></div>
 
-          <DropdownMenu open={false}>
+          <Button variant="outline" onClick={onLogoutClick}>
+            <LogOut />
+          </Button>
+          {/* <DropdownMenu open={false}>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
                 <CircleUser className="h-5 w-5" />
@@ -173,7 +182,7 @@ export function AdminWrapper({ children }: AdminWrapperProps): JSX.Element {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
