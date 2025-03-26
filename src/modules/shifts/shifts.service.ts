@@ -1,3 +1,4 @@
+import { SCHEDULES } from '@/common/constants/routes';
 import { Role } from '@prisma/client';
 import { env } from 'process';
 import type { DbService } from '../db/db.service';
@@ -78,7 +79,7 @@ export class ShiftsService {
             weekDay,
             startAt,
             endAt,
-            `${env.BASE_URL}`,
+            `${env.BASE_URL}` + SCHEDULES,
           ),
         }),
       ),
