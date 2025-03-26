@@ -90,7 +90,7 @@ export default function UsersTable(): JSX.Element {
               <UserStatusBadge {...user} />
             </TableCell>
             <TableCell className="hidden md:table-cell">
-              <>{stringToLocaleString(user.createdAt)}</>
+              <>{user.createdAt}</>
             </TableCell>
           </TableRow>
         ))}

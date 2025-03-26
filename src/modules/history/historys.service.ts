@@ -40,11 +40,13 @@ export class HistoriesService {
       weekDaySchema.enum.SABADO,
     ];
 
-    const currentWeekDayEnum = weekDayValues[currentWeekDay];
+    const yesterdayWeekDay = currentWeekDay === 0 ? 6 : currentWeekDay - 1;
+
+    const yesterdayWeekDayEnum = weekDayValues[yesterdayWeekDay];
 
     const shifts = await this.getShiftsUseCase.execute({
       status: shiftStatusSchema.enum.APROVADO,
-      weekDay: currentWeekDayEnum,
+      weekDay: yesterdayWeekDayEnum,
     });
 
     const historyData: Prisma.HistoryCreateManyInput[] = shifts.map((shift) => {
