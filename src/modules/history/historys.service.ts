@@ -19,10 +19,10 @@ export class HistoriesService {
       },
     });
 
-    const today = new Date();
+    const now = new Date();
 
     // If the history was updated today, we don't need to update it again
-    if (history?.createdAt.getDate() === today.getDate()) {
+    if (history?.createdAt.getDate() === now.getDate()) {
       // TODO: Update error
       throw new Error('History already updated today');
       return;
@@ -47,15 +47,23 @@ export class HistoriesService {
       weekDay: currentWeekDayEnum,
     });
 
-    const historyData: Prisma.HistoryCreateManyInput[] = shifts.map((shift) => {
-      return {
-        userId: shift.userId,
-        weekDay: shift.weekDay,
-        startAt: shift.startAt,
-        endAt: shift.endAt,
-        relatedDate: today,
-      };
+    const shiftsRegisteredADayAgoOrMore = shifts.filter((shift) => {
+      const shiftDate = new Date(shift.startAt);
+      const diffInTime = now.getTime() - shiftDate.getTime();
+      const diffInHours = diffInTime / (1000 * 3600);
+      return diffInHours >= 24;
     });
+
+    const historyData: Prisma.HistoryCreateManyInput[] =
+      shiftsRegisteredADayAgoOrMore.map((shift) => {
+        return {
+          userId: shift.userId,
+          weekDay: shift.weekDay,
+          startAt: shift.startAt,
+          endAt: shift.endAt,
+          relatedDate: now,
+        };
+      });
 
     await this.dbService.history.createMany({
       data: historyData,
